@@ -99,12 +99,12 @@ class UnityModuleImpl implements UnityModule {
     }
 
     constructor() {
+        this.stringListeners = {};
+        this.unityMessageListeners = {};
         this.createListeners();
     }
 
     private createListeners() {
-        this.stringListeners = {};
-        this.unityMessageListeners = {};
         DeviceEventEmitter.addListener('onUnityMessage', message => {
             const result = handleMessage(message);
             if (result instanceof MessageHandler) {

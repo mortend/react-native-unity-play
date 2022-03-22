@@ -8,6 +8,7 @@ export default UnityView;
 export {
   UnityModule,
   MessageHandler,
-  UnityViewMessage,
   UnityResponderView
 };
+
+export type { UnityViewMessage };

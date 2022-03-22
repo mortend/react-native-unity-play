@@ -32,6 +32,9 @@ export default class MessageHandler {
     public data: any;
 
     constructor() {
+        this.id = -1
+        this.seq = ''
+        this.name = ''
     }
 
     public send(data: any) {

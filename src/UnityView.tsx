@@ -26,8 +26,9 @@ export default class UnityView extends React.Component<UnityViewProps> {
 
     private handle: number;
 
-    constructor(props) {
+    constructor(props: any) {
         super(props);
+        this.handle = -1
     }
 
     public componentDidMount() {
