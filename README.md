@@ -49,6 +49,10 @@ UNITY PLAYER SETTINGS
     - select `Unity-iPhone/Products/UnityFramework.framework`
     - in `Build Phases` remove `UnityFramework.framework` from `Linked Frameworks and Libraries` ( select it and press `-` )
     - in `Build Phases` move `Embedded Frameworks` before `Compile Sources` ( drag and drop )
+5. Add `Data` to `Copy Bundle Resources`
+    - select `Unity-iPhone` project in workspace
+    - select `UnityFramework` in targets
+    - in `Build Phases` add `Data` to `Copy Bundle Resources`
    
 Add following lines to your project `main.m` file (located at same folder with `AppDelegate`)
 ```objectivec
