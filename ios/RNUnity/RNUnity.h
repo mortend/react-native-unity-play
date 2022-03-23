@@ -51,6 +51,7 @@ typedef void (*unity_receive_command)(const char *);
 
 @property (atomic, class) id<RNUnityFramework> ufw;
 
++ (void) initFromSwift;
 + (id<RNUnityFramework>)launchWithOptions:(NSDictionary*)launchOptions;
 
 + (void)setReceiverHandshake:(unity_receive_handshake)receiverHandshake

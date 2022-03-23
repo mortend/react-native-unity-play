@@ -1,5 +1,7 @@
 #import "RNUnity.h"
 
+#include <crt_externs.h>
+
 @interface RNUnity ()
 
 @property (nonatomic) BOOL hasListeners;
@@ -53,6 +55,14 @@ static id<RNUnityFramework> _RNUnity_ufw;
     @synchronized (self) {
         _RNUnity_ufw = ufw;
     }
+}
+
++ (void) initFromSwift {
+    NSLog(@"RNUnity.initFromSwift()");
+    _RNUnity_argc = *_NSGetArgc();
+    _RNUnity_argv = *_NSGetArgv();
+    static const char* arg = "";
+    if (!_RNUnity_argv) _RNUnity_argv = (char**) &arg;
 }
 
 + (id<RNUnityFramework>) launchWithOptions:(NSDictionary*)applaunchOptions {
