@@ -143,7 +143,7 @@ RCT_EXPORT_METHOD(postMessage:(nonnull NSString *)gameObject
                   message:(nonnull NSString *)message) {
 
     if (_RNUnity_sharedInstance) {
-      [[RNUnity ufw] sendMessageToGOWithName:NULL functionName:NULL message:NULL];
+      [[RNUnity ufw] sendMessageToGOWithName:gameObject functionName:functionName message:message];
     }
 }
 

@@ -31,14 +31,9 @@ public class RNUnityManager extends SimpleViewManager<UnityResponderView> implem
         final UnityResponderView view = new UnityResponderView(reactContext);
         view.addOnAttachStateChangeListener(this);
 
-        // Workaround!
         if (UnityUtils.getPlayer() != null) {
-            //UnityUtils.quit();
-        }
-
-        /*if (UnityUtils.getPlayer() != null) {
             view.setUnityPlayer(UnityUtils.getPlayer());
-        } else*/ {
+        } else {
             UnityUtils.createPlayer(reactContext.getCurrentActivity(), new UnityUtils.CreateCallback() {
                 @Override
                 public void onReady() {
