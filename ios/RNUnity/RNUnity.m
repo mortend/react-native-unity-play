@@ -57,15 +57,38 @@ static id<RNUnityFramework> _RNUnity_ufw;
     }
 }
 
-+ (void) initFromSwift {
++ (void)initFromSwift {
     NSLog(@"RNUnity.initFromSwift()");
     _RNUnity_argc = *_NSGetArgc();
     _RNUnity_argv = *_NSGetArgv();
-    static const char* arg = "";
-    if (!_RNUnity_argv) _RNUnity_argv = (char**) &arg;
 }
 
-+ (id<RNUnityFramework>) launchWithOptions:(NSDictionary*)applaunchOptions {
++ (void)applicationWillResignActive:(UIApplication*)application {
+    NSLog(@"RNUnity.applicationWillResignActive()");
+    [[[self ufw] appController] applicationWillResignActive: application];
+}
+
++ (void)applicationDidEnterBackground:(UIApplication*)application {
+    NSLog(@"RNUnity.applicationDidEnterBackground()");
+    [[[self ufw] appController] applicationDidEnterBackground: application];
+}
+
++ (void)applicationWillEnterForeground:(UIApplication*)application {
+    NSLog(@"RNUnity.applicationWillEnterForeground()");
+    [[[self ufw] appController] applicationWillEnterForeground: application];
+}
+
++ (void)applicationDidBecomeActive:(UIApplication*)application {
+    NSLog(@"RNUnity.applicationDidBecomeActive()");
+    [[[self ufw] appController] applicationDidBecomeActive: application];
+}
+
++ (void)applicationWillTerminate:(UIApplication*)application {
+    NSLog(@"RNUnity.applicationWillTerminate()");
+    [[[self ufw] appController] applicationWillTerminate: application];
+}
+
++ (id<RNUnityFramework>)launchWithOptions:(NSDictionary*)applaunchOptions {
 
     NSString* bundlePath = nil;
     bundlePath = [[NSBundle mainBundle] bundlePath];
