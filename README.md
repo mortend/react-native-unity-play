@@ -53,7 +53,12 @@ UNITY PLAYER SETTINGS
     - select `Unity-iPhone` project in workspace
     - select `UnityFramework` in targets
     - in `Build Phases` add `Data` to `Copy Bundle Resources`
-   
+
+#### Objective-C
+
+<details>
+<summary>Click to expand!</summary>
+
 Add following lines to your project `main.m` file (located at same folder with `AppDelegate`)
 ```objectivec
 #import <UIKit/UIKit.h>
@@ -87,6 +92,45 @@ Add following lines to your project `AppDelegate.m` file
 
 @end
 ```
+
+</details>
+
+#### Swift
+
+<details>
+<summary>Click to expand!</summary>
+
+Make the following changes to your `AppDelegate.swift` file
+```swift
+@UIApplicationMain
+class AppDelegate: UIApplicationDelegate {
+  init() {
+    RNUnity.initFromSwift()
+  }
+
+  func applicationWillResignActive(_ application: UIApplication) {
+    RNUnity.applicationWillResignActive(application)
+  }
+
+  func applicationDidEnterBackground(_ application: UIApplication) {
+    RNUnity.applicationDidEnterBackground(application)
+  }
+
+  func applicationWillEnterForeground(_ application: UIApplication) {
+    RNUnity.applicationWillEnterForeground(application)
+  }
+
+  func applicationDidBecomeActive(_ application: UIApplication) {
+    RNUnity.applicationDidBecomeActive(application)
+  }
+
+  func applicationWillTerminate(_ application: UIApplication) {
+    RNUnity.applicationWillTerminate(application)
+  }
+}
+```
+
+</details>
 
 ### Android
 
