@@ -29,8 +29,12 @@ BUILD SETTINGS
 1. `Export project` -> selection set !
 
 UNITY PLAYER SETTINGS
-1. `Resolution and Presentation` -> `Start in fullscreen mode` -> no selection set !
-2. `Resolution and Presentation` -> `Render outside safe area` -> no selection set !
+1. `Resolution and Presentation` -> `Fullscreen Mode` -> select `Windowed`
+2. `Resolution and Presentation` -> `Resizable Window` -> selection set !
+3. `Resolution and Presentation` -> `Hide Navigation Bar` -> no selection set !
+4. `Resolution and Presentation` -> `Render outside safe area` -> no selection set !
+5. `Other Settings` -> `Scripting Backend` -> select `IL2CPP`
+6. `Other Settings` -> `Target Architectures` -> `ARM64` -> selection set !
 
 ### Installation
 
