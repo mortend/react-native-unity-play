@@ -22,6 +22,7 @@ UNITY PLAYER SETTINGS
 
 1. `Multitasking` -> `Requires Fullscreen` -> no selection set !
 2. `Status Bar` -> `Status Bar Hidden` -> no selection set !
+3. `Other Settings` -> `Target SDK` -> select `Device SDK` or `Simulator SDK`
 
 #### Android
 
