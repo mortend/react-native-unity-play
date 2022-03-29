@@ -1,8 +1,5 @@
 {
-    "name": "Azesmway.RNU.Editor",
-    "includePlatforms": [
-        "Editor"
-    ],
+    "name": "RNUnity",
     "optionalUnityReferences": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
