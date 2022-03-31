@@ -13,7 +13,7 @@
 
 @implementation RNUnity
 
-RCT_EXPORT_MODULE(RNUnity)
+RCT_EXPORT_MODULE(UnityNativeModule)
 
 static char ** _RNUnity_argv;
 
@@ -158,6 +158,15 @@ RCT_EXPORT_METHOD(invokeCommand:(NSString *)message) {
         if (_RNUnity_receiver_command) {
             _RNUnity_receiver_command([self toSharpString:message]);
         }
+    }
+}
+
+RCT_EXPORT_METHOD(postMessage:(const char *)gameObject
+                  functionName:(const char *)functionName
+                  message:(const char *)message) {
+
+    if (_RNUnity_sharedInstance) {
+      [[RNUnity ufw] sendMessageToGOWithName:gameObject functionName:functionName message:message];
     }
 }
 
