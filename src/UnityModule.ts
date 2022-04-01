@@ -1,17 +1,10 @@
-import { NativeModules, DeviceEventEmitter } from 'react-native';
-import MessageHandler, { UnityMessagePrefix } from "./MessageHandler";
+import { NativeModules, NativeEventEmitter, EventSubscription } from 'react-native';
 
 const { UnityNativeModule } = NativeModules;
 
-export interface UnityViewMessage {
-    name: string;
-    data: any;
-    callBack?: (data: any) => void;
-}
-
 export interface UnityModule {
     /**
-     * Return whether is unity ready.
+     * Return whether is Unity ready.
      */
     isReady(): Promise<boolean>;
     /**
@@ -19,110 +12,43 @@ export interface UnityModule {
      */
     createUnity(): Promise<boolean>;
     /**
-     * Send Message to UnityMessageManager.
-     * @param message The message will post.
+     * Listen for messages from Unity.
      */
-    postMessageToUnityManager(message: string | UnityViewMessage): void;
+    addListener(onMessage: (data: any) => void): EventSubscription;
+    /**
+     * Invoke a Unity method returning a promise.
+     * @param gameObject The Name of GameObject. Also can be a path string.
+     * @param methodName Method name in GameObject instance.
+     * @param input An object to serialize as JSON.
+     */
+    callMethod(gameObject: string, methodName: string, input: any): Promise<any>;
     /**
      * Send Message to Unity.
      * @param gameObject The Name of GameObject. Also can be a path string.
      * @param methodName Method name in GameObject instance.
-     * @param message The message will post.
+     * @param message The message that is being sent.
      */
-    postMessage(gameObject: string, methodName: string, message: string): void;
+    sendMessage(gameObject: string, methodName: string, message: string): void;
     /**
-     * Pause the unity player
+     * Pause the Unity player
      */
     pause(): void;
     /**
-     * Pause the unity player
+     * Pause the Unity player
      */
     resume(): void;
     /**
-     * Quit the unity player
+     * Quit the Unity player
      */
     quit(): void;
-    /**
-     * Receive string and json message from unity.
-     */
-    addMessageListener(listener: (message: string | MessageHandler) => void): number;
-    /**
-     * Only receive string message from unity.
-     */
-    addStringMessageListener(listener: (message: string) => void): number;
-    /**
-     * Only receive json message from unity.
-     */
-    addUnityMessageListener(listener: (handler: MessageHandler) => void): number;
-    /**
-     * Remove message listener.
-     */
-    removeMessageListener(handleId: number): void;
-}
-
-let sequence = 0;
-function generateId() {
-    sequence = sequence + 1;
-    return sequence;
-}
-
-const waitCallbackMessageMap: {
-    [id: number]: UnityViewMessage
-} = {};
-
-function handleMessage(message: string) {
-    if (MessageHandler.isUnityMessage(message)) {
-        const handler = MessageHandler.deserialize(message);
-        if (handler.seq === 'end') {
-            // handle callback message
-            const m = waitCallbackMessageMap[handler.id];
-            delete waitCallbackMessageMap[handler.id];
-            if (m && m.callBack != null) {
-                m.callBack(handler.data);
-            }
-            return;
-        } else {
-            return handler;
-        }
-    } else {
-        return message;
-    }
 }
 
 class UnityModuleImpl implements UnityModule {
-    private hid = 0;
-    private stringListeners: {
-        [hid: number]: (message: string) => void
-    }
-    private unityMessageListeners: {
-        [hid: number]: (message: MessageHandler) => void
-    }
+    eventEmitter: NativeEventEmitter
+    methodHandle = -1
 
     constructor() {
-        this.stringListeners = {};
-        this.unityMessageListeners = {};
-        this.createListeners();
-    }
-
-    private createListeners() {
-        DeviceEventEmitter.addListener('onUnityMessage', message => {
-            const result = handleMessage(message);
-            if (result instanceof MessageHandler) {
-                Object.values(this.unityMessageListeners).forEach(listener => {
-                    listener(result);
-                });
-            }
-            if (typeof result === 'string') {
-                Object.values(this.stringListeners).forEach(listener => {
-                    listener(result);
-                });
-            }
-        });
-    }
-
-    private getHandleId() {
-        this.hid = this.hid + 1;
-        return this.hid;
+        this.eventEmitter = new NativeEventEmitter(UnityNativeModule)
     }
 
     public async isReady() {
@@ -133,25 +59,38 @@ class UnityModuleImpl implements UnityModule {
         return UnityNativeModule.createUnity();
     }
 
-    public postMessageToUnityManager(message: string | UnityViewMessage) {
-        if (typeof message === 'string') {
-            this.postMessage('UnityMessageManager', 'onMessage', message);
-        } else {
-            const id = generateId();
-            if (message.callBack) {
-                waitCallbackMessageMap[id] = message;
-            }
-            this.postMessage('UnityMessageManager', 'onRNMessage', UnityMessagePrefix + JSON.stringify({
-                id: id,
-                seq: message.callBack ? 'start' : '',
-                name: message.name,
-                data: message.data
-            }));
-        }
+    public addListener(onMessage: (data: any) => void) {
+        return this.eventEmitter.addListener("message", onMessage)
     }
 
-    public postMessage(gameObject: string, methodName: string, message: string) {
-        UnityNativeModule.postMessage(gameObject, methodName, message);
+    public async callMethod(gameObject: string, methodName: string, input: any) {
+        return new Promise((resolve, reject) => {
+            const handle = ++this.methodHandle
+            const onError = this.eventEmitter.addListener("reject", json => {
+                const args = JSON.parse(json)
+                if (args.handle === handle) {
+                    onError.remove()
+                    onReturn.remove()
+                    reject(args.data)
+                }
+            })
+            const onReturn = this.eventEmitter.addListener("resolve", json => {
+                const args = JSON.parse(json)
+                if (args.handle === handle) {
+                    onError.remove()
+                    onReturn.remove()
+                    resolve(args.data)
+                }
+            })
+            UnityNativeModule.sendMessage(gameObject, methodName, JSON.stringify({
+                handle,
+                input
+            }))
+        })
+    }
+
+    public sendMessage(gameObject: string, methodName: string, message: string) {
+        UnityNativeModule.sendMessage(gameObject, methodName, message);
     }
 
     public pause() {
@@ -164,34 +103,6 @@ class UnityModuleImpl implements UnityModule {
 
     public quit() {
         UnityNativeModule.quit();
-    }
-
-    public addMessageListener(listener: (handler: string | MessageHandler) => void) {
-        const id = this.getHandleId();
-        this.stringListeners[id] = listener;
-        this.unityMessageListeners[id] = listener;
-        return id;
-    }
-
-    public addStringMessageListener(listener: (message: string) => void) {
-        const id = this.getHandleId();
-        this.stringListeners[id] = listener;
-        return id;
-    }
-
-    public addUnityMessageListener(listener: (handler: MessageHandler) => void) {
-        const id = this.getHandleId();
-        this.unityMessageListeners[id] = listener;
-        return id;
-    }
-
-    public removeMessageListener(handleId: number) {
-        if (this.unityMessageListeners[handleId]) {
-            delete this.unityMessageListeners[handleId];
-        }
-        if (this.stringListeners[handleId]) {
-            delete this.stringListeners[handleId];
-        }
     }
 }
 

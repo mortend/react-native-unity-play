@@ -6,8 +6,6 @@
 
 @property (nonatomic) BOOL hasListeners;
 
-- (const char *)toSharpString:(NSString *)string;
-
 @end
 
 
@@ -120,90 +118,44 @@ RCT_EXPORT_METHOD(unloadUnity) {
     [self hideUnityWindow];
 }
 
--(void)startObserving {
+- (void)startObserving {
     self.hasListeners = YES;
 }
 
--(void)stopObserving {
+- (void)stopObserving {
     self.hasListeners = NO;
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"UnityMessage"];
+    return @[@"message", @"reject", @"resolve"];
 }
 
 - (dispatch_queue_t)methodQueue {
     return dispatch_get_main_queue();
 }
 
-static unity_receive_handshake _RNUnity_receiver_handshake;
-static unity_receive_command _RNUnity_receiver_command;
+RCT_EXPORT_METHOD(sendMessage:(NSString *)gameObject
+                  functionName:(NSString *)functionName
+                  message:(NSString *)message) {
 
-+ (void)setReceiverHandshake:(unity_receive_handshake)receiverHandshake
-             receiverCommand:(unity_receive_command)receiverCommand {
-    _RNUnity_receiver_handshake = receiverHandshake;
-    _RNUnity_receiver_command = receiverCommand;
-}
-
-RCT_EXPORT_METHOD(invokeHandshake) {
     if (_RNUnity_sharedInstance) {
-        if (_RNUnity_receiver_handshake) {
-            _RNUnity_receiver_handshake();
-        }
+        [[RNUnity ufw] sendMessageToGOWithName:[gameObject UTF8String] functionName:[functionName UTF8String] message:[message UTF8String]];
     }
 }
 
-RCT_EXPORT_METHOD(invokeCommand:(NSString *)message) {
-    if (_RNUnity_sharedInstance) {
-        if (_RNUnity_receiver_command) {
-            _RNUnity_receiver_command([self toSharpString:message]);
-        }
-    }
++ (void)sendEvent:(const char*)name data:(const char*)data {
+    [_RNUnity_sharedInstance sendEvent:[NSString stringWithUTF8String:name] data:[NSString stringWithUTF8String:data]];
 }
 
-RCT_EXPORT_METHOD(postMessage:(const char *)gameObject
-                  functionName:(const char *)functionName
-                  message:(const char *)message) {
-
-    if (_RNUnity_sharedInstance) {
-      [[RNUnity ufw] sendMessageToGOWithName:gameObject functionName:functionName message:message];
-    }
-}
-
-RCT_EXPORT_METHOD(postMessage:(nonnull NSString *)gameObject
-                  functionName:(nonnull NSString *)functionName
-                  message:(nonnull NSString *)message) {
-
-    if (_RNUnity_sharedInstance) {
-      [[RNUnity ufw] sendMessageToGOWithName:[gameObject UTF8String] functionName:[functionName UTF8String] message:[message UTF8String]];
-    }
-}
-
-+ (void)sendMessage:(const char *)message {
-    [_RNUnity_sharedInstance sendMessage:[NSString stringWithUTF8String:message]];
-}
-
-- (void)sendMessage:(NSString *)message {
+- (void)sendEvent:(NSString *)name data:(NSString *)data {
     if (self.hasListeners) {
-        [self sendEventWithName:@"UnityMessage" body:message];
+        [self sendEventWithName:name body:data];
     }
-}
-
-- (const char *)toSharpString:(NSString *)string {
-    const char * result = NULL;
-    const char * cString = [string cStringUsingEncoding:NSUTF8StringEncoding];
-    size_t sizeString = strlen(cString);
-    if (sizeString > 0) {
-        char *copyString = (char *)malloc(sizeString + 1);
-        strcpy(copyString, cString);
-        result = copyString;
-    }
-    return result;
 }
 
 - (void)hideUnityWindow {
     UIWindow * main = [[[UIApplication sharedApplication] delegate] window];
-    if(main != nil) {
+    if (main != nil) {
         [main makeKeyAndVisible];
         [[RNUnity ufw] unloadApplication];
     }

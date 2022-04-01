@@ -40,10 +40,6 @@
 @end
 
 
-typedef void (*unity_receive_handshake)();
-typedef void (*unity_receive_command)(const char *);
-
-
 @interface RNUnity : RCTEventEmitter <RCTBridgeModule>
 
 @property (atomic, class) int argc;
@@ -61,9 +57,6 @@ typedef void (*unity_receive_command)(const char *);
 
 + (id<RNUnityFramework>)launchWithOptions:(NSDictionary*)launchOptions;
 
-+ (void)setReceiverHandshake:(unity_receive_handshake)receiverHandshake
-			 receiverCommand:(unity_receive_command)receiverCommand;
-+ (void)sendMessage:(const char *)message;
++ (void)sendEvent:(const char*)name data:(const char*)data;
 
 @end
-
