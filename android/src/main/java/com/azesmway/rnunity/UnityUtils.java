@@ -26,9 +26,6 @@ public class UnityUtils {
     private static boolean _isUnityReady;
     private static boolean _isUnityPaused;
 
-    private static final CopyOnWriteArraySet<UnityEventListener> mUnityEventListeners =
-            new CopyOnWriteArraySet<>();
-
     public static UnityPlayer getPlayer() {
         if (!_isUnityReady) {
             return null;
@@ -84,7 +81,7 @@ public class UnityUtils {
         });
     }
 
-    public static void postMessage(String gameObject, String methodName, String message) {
+    public static void sendMessage(String gameObject, String methodName, String message) {
         if (!_isUnityReady) {
             return;
         }
@@ -110,26 +107,6 @@ public class UnityUtils {
             unityPlayer.unload();
             _isUnityReady = false;
         }
-    }
-
-    /**
-     * Invoke by unity C#
-     */
-    public static void onUnityMessage(String message) {
-        for (UnityEventListener listener : mUnityEventListeners) {
-            try {
-                listener.onMessage(message);
-            } catch (Exception e) {
-            }
-        }
-    }
-
-    public static void addUnityEventListener(UnityEventListener listener) {
-        mUnityEventListeners.add(listener);
-    }
-
-    public static void removeUnityEventListener(UnityEventListener listener) {
-        mUnityEventListeners.remove(listener);
     }
 
     public static void addUnityViewToBackground() {

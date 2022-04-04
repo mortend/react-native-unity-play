@@ -57,6 +57,6 @@
 
 + (id<RNUnityFramework>)launchWithOptions:(NSDictionary*)launchOptions;
 
-+ (void)sendEvent:(const char*)name data:(const char*)data;
++ (void)emitEvent:(const char*)name data:(const char*)data;
 
 @end

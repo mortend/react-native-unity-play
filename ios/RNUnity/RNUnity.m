@@ -143,11 +143,11 @@ RCT_EXPORT_METHOD(sendMessage:(NSString *)gameObject
     }
 }
 
-+ (void)sendEvent:(const char*)name data:(const char*)data {
++ (void)emitEvent:(const char*)name data:(const char*)data {
     [_RNUnity_sharedInstance sendEvent:[NSString stringWithUTF8String:name] data:[NSString stringWithUTF8String:data]];
 }
 
-- (void)sendEvent:(NSString *)name data:(NSString *)data {
+- (void)emitEvent:(NSString *)name data:(NSString *)data {
     if (self.hasListeners) {
         [self sendEventWithName:name body:data];
     }

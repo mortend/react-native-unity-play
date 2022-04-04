@@ -66,19 +66,19 @@ class UnityModuleImpl implements UnityModule {
     public async callMethod(gameObject: string, methodName: string, input: any) {
         return new Promise((resolve, reject) => {
             const handle = ++this.methodHandle
-            const onError = this.eventEmitter.addListener("reject", json => {
+            const onReject = this.eventEmitter.addListener("reject", json => {
                 const args = JSON.parse(json)
                 if (args.handle === handle) {
-                    onError.remove()
-                    onReturn.remove()
+                    onReject.remove()
+                    onResolve.remove()
                     reject(args.data)
                 }
             })
-            const onReturn = this.eventEmitter.addListener("resolve", json => {
+            const onResolve = this.eventEmitter.addListener("resolve", json => {
                 const args = JSON.parse(json)
                 if (args.handle === handle) {
-                    onError.remove()
-                    onReturn.remove()
+                    onReject.remove()
+                    onResolve.remove()
                     resolve(args.data)
                 }
             })

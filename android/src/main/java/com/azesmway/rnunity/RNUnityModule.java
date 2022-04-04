@@ -1,8 +1,6 @@
 
 package com.azesmway.rnunity;
 
-import androidx.annotation.Nullable;
-
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -10,10 +8,17 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
-public class RNUnityModule extends ReactContextBaseJavaModule implements UnityEventListener {
+public class RNUnityModule extends ReactContextBaseJavaModule {
+    static RNUnityModule instance;
+
+    // Called by C#
+    public static RNUnityModule getInstance() {
+        return instance;
+    }
+
     public RNUnityModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        UnityUtils.addUnityEventListener(this);
+        instance = this;
     }
 
     @Override
@@ -36,9 +41,15 @@ public class RNUnityModule extends ReactContextBaseJavaModule implements UnityEv
         });
     }
 
+    // Called by C#
+    public void emitEvent(String name, String data) {
+        ReactContext context = getReactApplicationContext();
+        context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(name, data);
+    }
+
     @ReactMethod
-    public void postMessage(String gameObject, String methodName, String message) {
-        UnityUtils.postMessage(gameObject, methodName, message);
+    public void sendMessage(String gameObject, String methodName, String message) {
+        UnityUtils.sendMessage(gameObject, methodName, message);
     }
 
     @ReactMethod
@@ -54,11 +65,5 @@ public class RNUnityModule extends ReactContextBaseJavaModule implements UnityEv
     @ReactMethod
     public void quit() {
         UnityUtils.quit();
-    }
-
-    @Override
-    public void onMessage(String message) {
-        ReactContext context = getReactApplicationContext();
-        context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onUnityMessage", message);
     }
 }
