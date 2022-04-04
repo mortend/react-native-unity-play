@@ -1,46 +1,46 @@
-import { NativeModules, NativeEventEmitter, EventSubscription } from 'react-native';
+import { NativeModules, NativeEventEmitter, EventSubscription } from 'react-native'
 
-const { UnityNativeModule } = NativeModules;
+const { UnityNativeModule } = NativeModules
 
 export interface UnityModule {
     /**
      * Return whether is Unity ready.
      */
-    isReady(): Promise<boolean>;
+    isReady(): Promise<boolean>
     /**
      * Manual init the Unity. Usually Unity is auto created when the first view is added.
      */
-    createUnity(): Promise<boolean>;
+    createUnity(): Promise<boolean>
     /**
      * Listen for messages from Unity.
      */
-    addListener(onMessage: (data: any) => void): EventSubscription;
+    addListener(onMessage: (data: any) => void): EventSubscription
     /**
      * Invoke a Unity method returning a promise.
      * @param gameObject The Name of GameObject. Also can be a path string.
      * @param methodName Method name in GameObject instance.
      * @param input An object to serialize as JSON.
      */
-    callMethod(gameObject: string, methodName: string, input: any): Promise<any>;
+    callMethod(gameObject: string, methodName: string, input: any): Promise<any>
     /**
      * Send Message to Unity.
      * @param gameObject The Name of GameObject. Also can be a path string.
      * @param methodName Method name in GameObject instance.
      * @param message The message that is being sent.
      */
-    sendMessage(gameObject: string, methodName: string, message: string): void;
+    sendMessage(gameObject: string, methodName: string, message: string): void
     /**
      * Pause the Unity player
      */
-    pause(): void;
+    pause(): void
     /**
      * Pause the Unity player
      */
-    resume(): void;
+    resume(): void
     /**
      * Quit the Unity player
      */
-    quit(): void;
+    quit(): void
 }
 
 class UnityModuleImpl implements UnityModule {
@@ -52,11 +52,11 @@ class UnityModuleImpl implements UnityModule {
     }
 
     public async isReady() {
-        return UnityNativeModule.isReady();
+        return UnityNativeModule.isReady()
     }
 
     public async createUnity() {
-        return UnityNativeModule.createUnity();
+        return UnityNativeModule.createUnity()
     }
 
     public addListener(onMessage: (data: any) => void) {
@@ -90,20 +90,20 @@ class UnityModuleImpl implements UnityModule {
     }
 
     public sendMessage(gameObject: string, methodName: string, message: string) {
-        UnityNativeModule.sendMessage(gameObject, methodName, message);
+        UnityNativeModule.sendMessage(gameObject, methodName, message)
     }
 
     public pause() {
-        UnityNativeModule.pause();
+        UnityNativeModule.pause()
     }
 
     public resume() {
-        UnityNativeModule.resume();
+        UnityNativeModule.resume()
     }
 
     public quit() {
-        UnityNativeModule.quit();
+        UnityNativeModule.quit()
     }
 }
 
-export const UnityModule: UnityModule = new UnityModuleImpl();
+export const UnityModule: UnityModule = new UnityModuleImpl()
