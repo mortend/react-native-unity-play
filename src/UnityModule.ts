@@ -22,7 +22,7 @@ export interface UnityModule {
      * @param methodName Method name in GameObject instance.
      * @param input An object to serialize as JSON.
      */
-    callMethod(gameObject: string, methodName: string, input: any): Promise<any>
+    callMethod(gameObject: string, methodName: string, input?: any): Promise<any>
     /**
      * Send Message to Unity.
      * @param gameObject The Name of GameObject. Also can be a path string.
