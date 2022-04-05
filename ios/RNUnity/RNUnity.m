@@ -11,7 +11,7 @@
 
 @implementation RNUnity
 
-RCT_EXPORT_MODULE(UnityNativeModule)
+RCT_EXPORT_MODULE(RNUnity)
 
 static char ** _RNUnity_argv;
 

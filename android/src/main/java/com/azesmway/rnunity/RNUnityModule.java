@@ -23,7 +23,7 @@ public class RNUnityModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "UnityNativeModule";
+        return "RNUnity";
     }
 
     @ReactMethod

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { requireNativeComponent, NativeModules, ViewPropTypes } from 'react-native';
 import * as PropTypes from "prop-types";
 
-const { UnityNativeModule } = NativeModules;
+const { RNUnity } = NativeModules;
 
 export default class UnityResponderView extends React.Component {
     public static propTypes = {
@@ -16,18 +16,18 @@ export default class UnityResponderView extends React.Component {
         super(props);
     }
 
-    static postMessage(gameObject = '', functionName = '', message = '') {
+    static sendMessage(gameObject = '', functionName = '', message = '') {
         if (gameObject !== '' && functionName !== '' && message !== '') {
-            UnityNativeModule.postMessage(gameObject, functionName, message);
+            RNUnity.sendMessage(gameObject, functionName, message);
         }
     }
 
     public componentDidMount() {
-        UnityNativeModule.initialize();
+        RNUnity.initialize();
     }
 
     public componentWillUnmount() {
-        UnityNativeModule.unloadUnity();
+        RNUnity.unloadUnity();
     }
 
     public render() {

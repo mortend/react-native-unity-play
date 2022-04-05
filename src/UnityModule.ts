@@ -1,6 +1,6 @@
 import { NativeModules, NativeEventEmitter, EventSubscription } from 'react-native'
 
-const { UnityNativeModule } = NativeModules
+const { RNUnity } = NativeModules
 
 export interface UnityModule {
     /**
@@ -48,15 +48,15 @@ class UnityModuleImpl implements UnityModule {
     methodHandle = -1
 
     constructor() {
-        this.eventEmitter = new NativeEventEmitter(UnityNativeModule)
+        this.eventEmitter = new NativeEventEmitter(RNUnity)
     }
 
     public async isReady() {
-        return UnityNativeModule.isReady()
+        return RNUnity.isReady()
     }
 
     public async createUnity() {
-        return UnityNativeModule.createUnity()
+        return RNUnity.createUnity()
     }
 
     public addListener(onMessage: (data: any) => void) {
@@ -82,7 +82,7 @@ class UnityModuleImpl implements UnityModule {
                     resolve(args.data)
                 }
             })
-            UnityNativeModule.sendMessage(gameObject, methodName, JSON.stringify({
+            RNUnity.sendMessage(gameObject, methodName, JSON.stringify({
                 handle,
                 input
             }))
@@ -90,19 +90,19 @@ class UnityModuleImpl implements UnityModule {
     }
 
     public sendMessage(gameObject: string, methodName: string, message: string) {
-        UnityNativeModule.sendMessage(gameObject, methodName, message)
+        RNUnity.sendMessage(gameObject, methodName, message)
     }
 
     public pause() {
-        UnityNativeModule.pause()
+        RNUnity.pause()
     }
 
     public resume() {
-        UnityNativeModule.resume()
+        RNUnity.resume()
     }
 
     public quit() {
-        UnityNativeModule.quit()
+        RNUnity.quit()
     }
 }
 
