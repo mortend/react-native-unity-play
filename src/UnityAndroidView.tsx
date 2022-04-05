@@ -10,7 +10,7 @@ export interface UnityAndroidViewProps extends ViewProperties {
     onMessage?: (message: string) => void;
 }
 
-export default class UnityAndroidView extends React.Component<UnityAndroidViewProps> {
+export class UnityAndroidView extends React.Component<UnityAndroidViewProps> {
     public static propTypes = {
         ...ViewPropTypes,
         onMessage: PropTypes.func

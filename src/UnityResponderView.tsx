@@ -6,7 +6,7 @@ import * as PropTypes from "prop-types";
 
 const { RNUnity } = NativeModules;
 
-export default class UnityResponderView extends React.Component {
+export class UnityResponderView extends React.Component {
     public static propTypes = {
         ...ViewPropTypes,
         fullScreen: PropTypes.bool
