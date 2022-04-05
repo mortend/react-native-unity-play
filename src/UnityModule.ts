@@ -1,4 +1,5 @@
-import { NativeModules, NativeEventEmitter, EventSubscription } from 'react-native'
+import type { EventSubscription } from 'react-native'
+import { NativeModules, NativeEventEmitter } from 'react-native'
 
 const { RNUnity } = NativeModules
 
@@ -45,25 +46,26 @@ export interface UnityModule {
 
 class UnityModuleImpl implements UnityModule {
     eventEmitter: NativeEventEmitter
+
     methodHandle = -1
 
     constructor() {
         this.eventEmitter = new NativeEventEmitter(RNUnity)
     }
 
-    public async isReady() {
+    async isReady() {
         return RNUnity.isReady()
     }
 
-    public async createUnity() {
+    async createUnity() {
         return RNUnity.createUnity()
     }
 
-    public addListener(onMessage: (data: any) => void) {
+    addListener(onMessage: (data: any) => void) {
         return this.eventEmitter.addListener("message", onMessage)
     }
 
-    public async callMethod(gameObject: string, methodName: string, input: any) {
+    async callMethod(gameObject: string, methodName: string, input: any) {
         return new Promise((resolve, reject) => {
             const handle = ++this.methodHandle
             const onReject = this.eventEmitter.addListener("reject", json => {
@@ -89,19 +91,19 @@ class UnityModuleImpl implements UnityModule {
         })
     }
 
-    public sendMessage(gameObject: string, methodName: string, message: string) {
+    sendMessage(gameObject: string, methodName: string, message: string) {
         RNUnity.sendMessage(gameObject, methodName, message)
     }
 
-    public pause() {
+    pause() {
         RNUnity.pause()
     }
 
-    public resume() {
+    resume() {
         RNUnity.resume()
     }
 
-    public quit() {
+    quit() {
         RNUnity.quit()
     }
 }
