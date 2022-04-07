@@ -62,7 +62,9 @@ class UnityModuleImpl implements UnityModule {
     }
 
     addListener(onMessage: (data: any) => void) {
-        return this.eventEmitter.addListener("message", onMessage)
+        return this.eventEmitter.addListener("message", (json: string) => {
+            onMessage(JSON.parse(json))
+        })
     }
 
     async callMethod(gameObject: string, methodName: string, input: any) {
@@ -73,7 +75,7 @@ class UnityModuleImpl implements UnityModule {
                 if (args.handle === handle) {
                     onReject.remove()
                     onResolve.remove()
-                    reject(args.data)
+                    reject(args.reason)
                 }
             })
             const onResolve = this.eventEmitter.addListener("resolve", json => {
@@ -81,7 +83,7 @@ class UnityModuleImpl implements UnityModule {
                 if (args.handle === handle) {
                     onReject.remove()
                     onResolve.remove()
-                    resolve(args.data)
+                    resolve(args.retval)
                 }
             })
             RNUnity.sendMessage(gameObject, methodName, JSON.stringify({

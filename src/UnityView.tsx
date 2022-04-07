@@ -16,7 +16,7 @@ export class UnityView extends React.Component<UnityViewProps> {
         onMessage: PropTypes.func
     }
 
-    listener?: EventSubscription
+    private listener?: EventSubscription
 
     componentDidMount() {
         if (this.props.onMessage) {
