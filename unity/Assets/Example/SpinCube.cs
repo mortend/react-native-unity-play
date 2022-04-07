@@ -26,6 +26,13 @@ public class SpinCube : MonoBehaviour
             transform.Rotate(RotateAmount);
     }
 
+    void setColor(string input)
+    {
+        Color color;
+        if (ColorUtility.TryParseHtmlString(input, out color))
+            GetComponent<Renderer>().material.color = color;
+    }
+
     void toggleRotate()
     {
         _rotate = !_rotate;
@@ -48,14 +55,14 @@ public class SpinCube : MonoBehaviour
     void toggleRotateRN(object param)
     {
         toggleRotate();
-        RNBridge
+        RNPromise
             .Begin(param)
             .Resolve(_rotate);
     }
 
     void getAccountRN(object param)
     {
-        RNBridge
+        RNPromise
             .Begin(param)
             .Resolve(new Account
             {
@@ -72,16 +79,16 @@ public class SpinCube : MonoBehaviour
 
     void failRN(object param)
     {
-        RNBridge
+        RNPromise
             .Begin(param)
             .Reject("This doesn't work");
     }
 
-    void voidRN(object param)
+    void setColorRN(object param)
     {
-        RNBridge
-            .Begin(param)
-            .Resolve();
+        var promise = RNPromise<string>.Begin(param);
+        setColor(promise.input);
+        promise.Resolve();
     }
 }
 

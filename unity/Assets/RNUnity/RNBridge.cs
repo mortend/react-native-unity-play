@@ -1,53 +1,13 @@
 using System.Runtime.InteropServices;
 using System;
+
 using Newtonsoft.Json;
 using UnityEngine;
 
 namespace RNUnity
 {
-    public class RNPromise
-    {
-        public object handle;
-        public object input;
-
-        public void Reject(object reason)
-        {
-            RNBridge.EmitEvent("reject", new {
-                handle = this.handle,
-                data = reason
-            });
-        }
-
-        public void Resolve(object retval = null)
-        {
-            RNBridge.EmitEvent("resolve", new {
-                handle = this.handle,
-                data = retval
-            });
-        }
-    }
-
     public static class RNBridge
     {
-        public static RNPromise Begin(object param)
-        {
-            if (Application.isEditor)
-                return new RNPromise();
-
-            if (Debug.isDebugBuild)
-                Debug.Log($"{nameof(RNBridge)}: begin");
-
-            try
-            {
-                return JsonConvert.DeserializeObject<RNPromise>((string) param);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"{nameof(RNBridge)}: {e.Message}");
-                return new RNPromise();
-            }
-        }
-
         public static void SendMessage(object data)
         {
             EmitEvent("message", data);
@@ -121,9 +81,9 @@ namespace RNUnity
                 _jobj = jc.CallStatic<AndroidJavaObject>("getInstance");
             }
 
-            void IRN.EmitEvent(string name, string data)
+            void IRN.EmitEvent(string name, string json)
             {
-                _jobj.Call("emitEvent", name, data);
+                _jobj.Call("emitEvent", name, json);
             }
         }
     }
