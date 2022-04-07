@@ -196,39 +196,20 @@ delete ``android:icon="@mipmap/app_icon"`` and ``android:theme="@style/UnityThem
 ## Usage
 
 ```javascript
-import { StyleSheet, View, Dimensions, Button, } from 'react-native';
-import UnityView, {
-  UnityModule,
-  UnityResponderView,
-} from 'react-native-unity-play';
+import { StyleSheet, View, Dimensions, Button, } from 'react-native'
+import { UnityView } from 'react-native-unity-play'
 
-const {width, height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window')
 
 const App: () => Node = () => {
-  const [isVisible, setVisible] = useState(false);
-  let unityElement
-
-  if (Platform.OS === 'android') {
-    unityElement = (
-      <UnityView style={{flex: 1}} />
-    );
-  } else {
-    unityElement = (
-      <UnityResponderView
-        fullScreen={true}
-        style={{width: width, height: height}}
-      />
-    );
-  }
-
+  const [isVisible, setVisible] = useState(false)
   return (
     <View>
         {!isVisible && (
           <Button title={'Start'} onPress={() => setVisible(true)} />
         )}
         {isVisible && (
-          <>
-            {unityElement}
+          <UnityView style={{width: width, height: height}}>
             <View
               style={{
                 position: 'absolute',
@@ -239,17 +220,14 @@ const App: () => Node = () => {
               <Button
                 title={'Close'}
                 onPress={() => {
-                  if (Platform.OS === 'android') {
-                    UnityModule.quit();
-                  }
-                  setVisible(false);
+                  setVisible(false)
                 }}
                 style={{color: '#fff'}}
               />
             </View>
-          </>
+          </UnityView>
         )}
     </View>
-  );
-};
+  )
+}
 ```
