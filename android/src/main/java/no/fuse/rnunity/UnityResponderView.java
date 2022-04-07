@@ -1,4 +1,4 @@
-package com.azesmway.rnunity;
+package no.fuse.rnunity;
 
 import android.content.Context;
 import android.content.res.Configuration;

@@ -117,7 +117,7 @@ namespace RNUnity
 
             public AndroidRN()
             {
-                AndroidJavaClass jc = new AndroidJavaClass("com.azesmway.rnunity.RNUnityModule");
+                AndroidJavaClass jc = new AndroidJavaClass("no.fuse.rnunity.RNUnityModule");
                 _jobj = jc.CallStatic<AndroidJavaObject>("getInstance");
             }
 

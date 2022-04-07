@@ -1,5 +1,5 @@
 
-package com.azesmway.rnunity;
+package no.fuse.rnunity;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;

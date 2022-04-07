@@ -1,4 +1,4 @@
-package com.azesmway.rnunity;
+package no.fuse.rnunity;
 
 import android.os.Handler;
 import android.view.View;

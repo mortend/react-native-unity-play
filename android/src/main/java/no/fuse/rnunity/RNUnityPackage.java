@@ -1,4 +1,4 @@
-package com.azesmway.rnunity;
+package no.fuse.rnunity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
