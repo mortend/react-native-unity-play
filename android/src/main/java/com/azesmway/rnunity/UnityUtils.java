@@ -116,6 +116,9 @@ public class UnityUtils {
         if (unityPlayer.getParent() != null) {
             ((ViewGroup)unityPlayer.getParent()).removeView(unityPlayer);
         }
+        if (true) {
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             unityPlayer.setZ(-1f);
         }

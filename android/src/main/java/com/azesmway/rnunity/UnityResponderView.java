@@ -8,7 +8,6 @@ import android.widget.FrameLayout;
 import com.unity3d.player.UnityPlayer;
 
 public class UnityResponderView extends FrameLayout {
-
     private UnityPlayer view;
 
     public UnityResponderView(Context context) {
@@ -38,8 +37,7 @@ public class UnityResponderView extends FrameLayout {
 
     @Override
     protected void onDetachedFromWindow() {
-        // todo: fix more than one unity view, don't add to background.
-        // UnityUtils.addUnityViewToBackground();
+        UnityUtils.addUnityViewToBackground();
         super.onDetachedFromWindow();
     }
 }
