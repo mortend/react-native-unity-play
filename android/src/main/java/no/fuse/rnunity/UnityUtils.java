@@ -44,49 +44,34 @@ public class UnityUtils {
 
                 player = new UnityPlayer(activity);
 
-                // start unity
-                addUnityViewToBackground();
-                player.windowFocusChanged(true);
-                player.requestFocus();
-                player.resume();
-
                 ready = true;
                 callback.onReady();
             }
         });
     }
 
+    static ViewGroup lastGroup;
+
     public static void addUnityViewToBackground() {
         Log.d("UnityUtils", "addUnityViewToBackground");
-        if (player == null) {
-            return;
-        }
-        if (player.getParent() != null) {
-            ((ViewGroup) player.getParent()).removeView(player);
-        }
-        if (true) {
-            return;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            player.setZ(-1f);
-        }
-        final Activity activity = ((Activity) player.getContext());
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(1, 1);
-        activity.addContentView(player, layoutParams);
+
+        lastGroup.removeAllViews();
+        lastGroup = null;
+
+        //player.pause();
     }
 
     public static void addUnityViewToGroup(ViewGroup group) {
         Log.d("UnityUtils", "addUnityViewToGroup");
-        if (player == null) {
-            return;
-        }
-        if (player.getParent() != null) {
-            ((ViewGroup) player.getParent()).removeView(player);
-        }
+
+        if (lastGroup != null) return;
+
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         group.addView(player, 0, layoutParams);
-        player.windowFocusChanged(true);
-        player.requestFocus();
-        player.resume();
+        lastGroup = group;
+
+        //player.windowFocusChanged(true);
+        //player.requestFocus();
+        //player.resume();
     }
 }

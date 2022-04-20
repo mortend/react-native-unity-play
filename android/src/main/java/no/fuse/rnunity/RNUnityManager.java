@@ -32,16 +32,13 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
         final UnityView view = new UnityView(reactContext);
         view.addOnAttachStateChangeListener(this);
 
-        if (UnityUtils.getPlayer() != null) {
-            view.setUnityPlayer(UnityUtils.getPlayer());
-        } else {
-            UnityUtils.createPlayer(reactContext.getCurrentActivity(), new UnityUtils.CreateCallback() {
-                @Override
-                public void onReady() {
-                    view.setUnityPlayer(UnityUtils.getPlayer());
-                }
-            });
-        }
+        UnityUtils.createPlayer(reactContext.getCurrentActivity(), new UnityUtils.CreateCallback() {
+            @Override
+            public void onReady() {
+                view.setUnityPlayer(UnityUtils.getPlayer());
+            }
+        });
+
         return view;
     }
 
@@ -56,8 +53,7 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
     public void onHostResume() {
         Log.d("RNUnityManager", "onHostResume");
         if (UnityUtils.isReady()) {
-            UnityUtils.getPlayer().resume();
-            restoreUnityUserState();
+            //UnityUtils.getPlayer().resume();
         }
     }
 
@@ -65,7 +61,7 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
     public void onHostPause() {
         Log.d("RNUnityManager", "onHostPause");
         if (UnityUtils.isReady()) {
-            UnityUtils.getPlayer().pause();
+            //UnityUtils.getPlayer().pause();
         }
     }
 
@@ -73,18 +69,13 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
     public void onHostDestroy() {
         Log.d("RNUnityManager", "onHostDestroy");
         if (UnityUtils.isReady()) {
-            UnityUtils.getPlayer().unload();
+            //UnityUtils.getPlayer().unload();
         }
-    }
-
-    private void restoreUnityUserState() {
-        Log.d("RNUnityManager", "restoreUnityUserState");
     }
 
     @Override
     public void onViewAttachedToWindow(View v) {
         Log.d("RNUnityManager", "onViewAttachedToWindow");
-        restoreUnityUserState();
     }
 
     @Override
