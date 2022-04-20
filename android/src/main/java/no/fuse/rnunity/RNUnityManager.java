@@ -1,6 +1,5 @@
 package no.fuse.rnunity;
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
@@ -31,14 +30,7 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
         Log.d("RNUnityManager", "createViewInstance");
         final UnityView view = new UnityView(reactContext);
         view.addOnAttachStateChangeListener(this);
-
-        UnityUtils.createPlayer(reactContext.getCurrentActivity(), new UnityUtils.CreateCallback() {
-            @Override
-            public void onReady() {
-                view.setUnityPlayer(UnityUtils.getPlayer());
-            }
-        });
-
+        // TODO
         return view;
     }
 
@@ -52,25 +44,16 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
     @Override
     public void onHostResume() {
         Log.d("RNUnityManager", "onHostResume");
-        if (UnityUtils.isReady()) {
-            //UnityUtils.getPlayer().resume();
-        }
     }
 
     @Override
     public void onHostPause() {
         Log.d("RNUnityManager", "onHostPause");
-        if (UnityUtils.isReady()) {
-            //UnityUtils.getPlayer().pause();
-        }
     }
 
     @Override
     public void onHostDestroy() {
         Log.d("RNUnityManager", "onHostDestroy");
-        if (UnityUtils.isReady()) {
-            //UnityUtils.getPlayer().unload();
-        }
     }
 
     @Override

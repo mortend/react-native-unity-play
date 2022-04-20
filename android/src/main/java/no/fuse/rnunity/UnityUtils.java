@@ -10,6 +10,7 @@ import com.unity3d.player.UnityPlayer;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
+/*
 public class UnityUtils {
     public interface CreateCallback {
         void onReady();
@@ -75,3 +76,4 @@ public class UnityUtils {
         //player.resume();
     }
 }
+*/

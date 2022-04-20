@@ -13,11 +13,6 @@ public class UnityView extends FrameLayout {
         super(context);
     }
 
-    public void setUnityPlayer(UnityPlayer player) {
-        this.player = player;
-        UnityUtils.addUnityViewToGroup(this);
-    }
-
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
@@ -36,7 +31,6 @@ public class UnityView extends FrameLayout {
 
     @Override
     protected void onDetachedFromWindow() {
-        UnityUtils.addUnityViewToBackground();
         super.onDetachedFromWindow();
     }
 }
