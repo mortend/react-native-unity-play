@@ -13,10 +13,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-/**
- * Created by xzper on 2018-03-08.
- */
-
 public class UnityUtils {
     public interface CreateCallback {
         void onReady();
@@ -50,19 +46,8 @@ public class UnityUtils {
             @Override
             public void run() {
                 activity.getWindow().setFormat(PixelFormat.RGBA_8888);
-                int flag = activity.getWindow().getAttributes().flags;
-                boolean fullScreen = false;
-                if((flag & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN) {
-                    fullScreen = true;
-                }
 
                 unityPlayer = new UnityPlayer(activity);
-
-                try {
-                    // wait a moument. fix unity cannot start when startup.
-                    Thread.sleep( 1000 );
-                } catch (Exception e) {
-                }
 
                 // start unity
                 addUnityViewToBackground();
@@ -70,22 +55,10 @@ public class UnityUtils {
                 unityPlayer.requestFocus();
                 unityPlayer.resume();
 
-                // restore window layout
-                if (!fullScreen) {
-                    activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-                    activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                }
                 _isUnityReady = true;
                 callback.onReady();
             }
         });
-    }
-
-    public static void sendMessage(String gameObject, String methodName, String message) {
-        if (!_isUnityReady) {
-            return;
-        }
-        UnityPlayer.UnitySendMessage(gameObject, methodName, message);
     }
 
     public static void pause() {

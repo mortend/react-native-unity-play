@@ -2,36 +2,35 @@ package no.fuse.rnunity;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 import com.unity3d.player.UnityPlayer;
 
-public class UnityResponderView extends FrameLayout {
-    private UnityPlayer view;
+public class UnityView extends FrameLayout {
+    private UnityPlayer player;
 
-    public UnityResponderView(Context context) {
+    public UnityView(Context context) {
         super(context);
     }
 
     public void setUnityPlayer(UnityPlayer player) {
-        this.view = player;
+        this.player = player;
         UnityUtils.addUnityViewToGroup(this);
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
-        if (view != null) {
-            view.windowFocusChanged(hasWindowFocus);
+        if (player != null) {
+            player.windowFocusChanged(hasWindowFocus);
         }
     }
 
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (view != null) {
-            view.configurationChanged(newConfig);
+        if (player != null) {
+            player.configurationChanged(newConfig);
         }
     }
 

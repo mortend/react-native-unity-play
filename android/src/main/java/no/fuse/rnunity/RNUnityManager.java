@@ -7,11 +7,10 @@ import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
-import com.facebook.react.uimanager.ViewGroupManager;
 
 import javax.annotation.Nonnull;
 
-public class RNUnityManager extends SimpleViewManager<UnityResponderView> implements LifecycleEventListener, View.OnAttachStateChangeListener {
+public class RNUnityManager extends SimpleViewManager<UnityView> implements LifecycleEventListener, View.OnAttachStateChangeListener {
     public static final String REACT_CLASS = "UnityView";
 
     public RNUnityManager(ReactApplicationContext reactContext) {
@@ -27,8 +26,8 @@ public class RNUnityManager extends SimpleViewManager<UnityResponderView> implem
 
     @Nonnull
     @Override
-    protected UnityResponderView createViewInstance(@Nonnull ThemedReactContext reactContext) {
-        final UnityResponderView view = new UnityResponderView(reactContext);
+    protected UnityView createViewInstance(@Nonnull ThemedReactContext reactContext) {
+        final UnityView view = new UnityView(reactContext);
         view.addOnAttachStateChangeListener(this);
 
         if (UnityUtils.getPlayer() != null) {
@@ -45,7 +44,7 @@ public class RNUnityManager extends SimpleViewManager<UnityResponderView> implem
     }
 
     @Override
-    public void onDropViewInstance(UnityResponderView view) {
+    public void onDropViewInstance(UnityView view) {
         view.removeOnAttachStateChangeListener(this);
         super.onDropViewInstance(view);
     }

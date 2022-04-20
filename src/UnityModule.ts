@@ -5,14 +5,6 @@ const { RNUnity } = NativeModules
 
 export interface UnityModule {
     /**
-     * Return whether is Unity ready.
-     */
-    isReady(): Promise<boolean>
-    /**
-     * Manual init the Unity. Usually Unity is auto created when the first view is added.
-     */
-    createUnity(): Promise<boolean>
-    /**
      * Listen for messages from Unity.
      */
     addListener(onMessage: (data: any) => void): EventSubscription
@@ -30,18 +22,6 @@ export interface UnityModule {
      * @param message The message that is being sent.
      */
     sendMessage(gameObject: string, methodName: string, message: string): void
-    /**
-     * Pause the Unity player
-     */
-    pause(): void
-    /**
-     * Pause the Unity player
-     */
-    resume(): void
-    /**
-     * Quit the Unity player
-     */
-    quit(): void
 }
 
 class UnityModuleImpl implements UnityModule {
@@ -51,14 +31,6 @@ class UnityModuleImpl implements UnityModule {
 
     constructor() {
         this.eventEmitter = new NativeEventEmitter(RNUnity)
-    }
-
-    async isReady() {
-        return RNUnity.isReady()
-    }
-
-    async createUnity() {
-        return RNUnity.createUnity()
     }
 
     addListener(onMessage: (data: any) => void) {
@@ -95,18 +67,6 @@ class UnityModuleImpl implements UnityModule {
 
     sendMessage(gameObject: string, methodName: string, message: string) {
         RNUnity.sendMessage(gameObject, methodName, message)
-    }
-
-    pause() {
-        RNUnity.pause()
-    }
-
-    resume() {
-        RNUnity.resume()
-    }
-
-    quit() {
-        RNUnity.quit()
     }
 }
 
