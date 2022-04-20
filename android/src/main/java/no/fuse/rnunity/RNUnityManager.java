@@ -55,7 +55,7 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
     @Override
     public void onHostResume() {
         Log.d("RNUnityManager", "onHostResume");
-        if (UnityUtils.isUnityReady()) {
+        if (UnityUtils.isReady()) {
             UnityUtils.getPlayer().resume();
             restoreUnityUserState();
         }
@@ -64,8 +64,7 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
     @Override
     public void onHostPause() {
         Log.d("RNUnityManager", "onHostPause");
-        if (UnityUtils.isUnityReady()) {
-            // Don't use UnityUtils.pause()
+        if (UnityUtils.isReady()) {
             UnityUtils.getPlayer().pause();
         }
     }
@@ -73,25 +72,13 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
     @Override
     public void onHostDestroy() {
         Log.d("RNUnityManager", "onHostDestroy");
-        if (UnityUtils.isUnityReady()) {
+        if (UnityUtils.isReady()) {
             UnityUtils.getPlayer().unload();
         }
     }
 
     private void restoreUnityUserState() {
         Log.d("RNUnityManager", "restoreUnityUserState");
-        // restore the unity player state
-        if (UnityUtils.isUnityPaused()) {
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (UnityUtils.getPlayer() != null) {
-                        UnityUtils.getPlayer().pause();
-                    }
-                }
-            }, 300); //TODO: 300 is the right one?
-        }
     }
 
     @Override
