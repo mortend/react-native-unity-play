@@ -1,5 +1,6 @@
 package no.fuse.rnunity;
 
+import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
@@ -7,10 +8,11 @@ import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.unity3d.player.UnityPlayer;
 
 import javax.annotation.Nonnull;
 
-public class RNUnityManager extends SimpleViewManager<UnityView> implements LifecycleEventListener, View.OnAttachStateChangeListener {
+public class RNUnityManager extends SimpleViewManager<UnityPlayer> implements LifecycleEventListener, View.OnAttachStateChangeListener {
     public static final String REACT_CLASS = "UnityView";
 
     public RNUnityManager(ReactApplicationContext reactContext) {
@@ -24,18 +26,24 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
         return REACT_CLASS;
     }
 
+    static UnityPlayer player;
+
     @Nonnull
     @Override
-    protected UnityView createViewInstance(@Nonnull ThemedReactContext reactContext) {
+    protected UnityPlayer createViewInstance(@Nonnull ThemedReactContext reactContext) {
         Log.d("RNUnityManager", "createViewInstance");
-        final UnityView view = new UnityView(reactContext);
-        view.addOnAttachStateChangeListener(this);
-        // TODO
-        return view;
+        final Activity activity = reactContext.getCurrentActivity();
+        if (player == null)
+            player = new UnityPlayer(activity);
+        player.addOnAttachStateChangeListener(this);
+        player.windowFocusChanged(true);
+        player.requestFocus();
+        player.resume();
+        return player;
     }
 
     @Override
-    public void onDropViewInstance(UnityView view) {
+    public void onDropViewInstance(UnityPlayer view) {
         Log.d("RNUnityManager", "onDropViewInstance");
         view.removeOnAttachStateChangeListener(this);
         super.onDropViewInstance(view);
