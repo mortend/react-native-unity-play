@@ -1,6 +1,7 @@
 package no.fuse.rnunity;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -27,6 +28,7 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
     @Nonnull
     @Override
     protected UnityView createViewInstance(@Nonnull ThemedReactContext reactContext) {
+        Log.d("RNUnityManager", "createViewInstance");
         final UnityView view = new UnityView(reactContext);
         view.addOnAttachStateChangeListener(this);
 
@@ -45,12 +47,14 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
 
     @Override
     public void onDropViewInstance(UnityView view) {
+        Log.d("RNUnityManager", "onDropViewInstance");
         view.removeOnAttachStateChangeListener(this);
         super.onDropViewInstance(view);
     }
 
     @Override
     public void onHostResume() {
+        Log.d("RNUnityManager", "onHostResume");
         if (UnityUtils.isUnityReady()) {
             UnityUtils.getPlayer().resume();
             restoreUnityUserState();
@@ -59,6 +63,7 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
 
     @Override
     public void onHostPause() {
+        Log.d("RNUnityManager", "onHostPause");
         if (UnityUtils.isUnityReady()) {
             // Don't use UnityUtils.pause()
             UnityUtils.getPlayer().pause();
@@ -67,12 +72,14 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
 
     @Override
     public void onHostDestroy() {
+        Log.d("RNUnityManager", "onHostDestroy");
         if (UnityUtils.isUnityReady()) {
             UnityUtils.getPlayer().unload();
         }
     }
 
     private void restoreUnityUserState() {
+        Log.d("RNUnityManager", "restoreUnityUserState");
         // restore the unity player state
         if (UnityUtils.isUnityPaused()) {
             Handler handler = new Handler();
@@ -89,10 +96,12 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
 
     @Override
     public void onViewAttachedToWindow(View v) {
+        Log.d("RNUnityManager", "onViewAttachedToWindow");
         restoreUnityUserState();
     }
 
     @Override
     public void onViewDetachedFromWindow(View v) {
+        Log.d("RNUnityManager", "onViewDetachedFromWindow");
     }
 }

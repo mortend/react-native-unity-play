@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
@@ -23,6 +24,7 @@ public class UnityUtils {
     private static boolean _isUnityPaused;
 
     public static UnityPlayer getPlayer() {
+        Log.d("UnityUtils", "getPlayer");
         if (!_isUnityReady) {
             return null;
         }
@@ -30,14 +32,17 @@ public class UnityUtils {
     }
 
     public static boolean isUnityReady() {
+        Log.d("UnityUtils", "isUnityReady");
         return _isUnityReady;
     }
 
     public static boolean isUnityPaused() {
+        Log.d("UnityUtils", "isUnityPaused");
         return _isUnityPaused;
     }
 
     public static void createPlayer(final Activity activity, final CreateCallback callback) {
+        Log.d("UnityUtils", "createPlayer");
         if (unityPlayer != null) {
             callback.onReady();
             return;
@@ -62,6 +67,7 @@ public class UnityUtils {
     }
 
     public static void pause() {
+        Log.d("UnityUtils", "pause");
         if (unityPlayer != null) {
             unityPlayer.pause();
             _isUnityPaused = true;
@@ -69,6 +75,7 @@ public class UnityUtils {
     }
 
     public static void resume() {
+        Log.d("UnityUtils", "resume");
         if (unityPlayer != null) {
             unityPlayer.resume();
             _isUnityPaused = false;
@@ -76,6 +83,7 @@ public class UnityUtils {
     }
 
     public static void quit() {
+        Log.d("UnityUtils", "quit");
         if (unityPlayer != null) {
             unityPlayer.unload();
             _isUnityReady = false;
@@ -83,6 +91,7 @@ public class UnityUtils {
     }
 
     public static void addUnityViewToBackground() {
+        Log.d("UnityUtils", "addUnityViewToBackground");
         if (unityPlayer == null) {
             return;
         }
@@ -101,6 +110,7 @@ public class UnityUtils {
     }
 
     public static void addUnityViewToGroup(ViewGroup group) {
+        Log.d("UnityUtils", "addUnityViewToGroup");
         if (unityPlayer == null) {
             return;
         }
