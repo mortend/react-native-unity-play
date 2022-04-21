@@ -37,4 +37,14 @@ public class RNUnityModule extends ReactContextBaseJavaModule {
     public void sendMessage(String gameObject, String methodName, String message) {
         UnityPlayer.UnitySendMessage(gameObject, methodName, message);
     }
+
+    @ReactMethod
+    public void addListener(String eventName) {
+        // Dummy method
+    }
+
+    @ReactMethod
+    public void removeListeners(Integer count) {
+        // Dummy method
+    }
 }
