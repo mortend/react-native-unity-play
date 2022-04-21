@@ -3,7 +3,6 @@ package no.fuse.rnunity;
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -14,10 +13,10 @@ import com.unity3d.player.UnityPlayer;
 
 import javax.annotation.Nonnull;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-
-public class RNUnityManager extends SimpleViewManager<UnityView> implements LifecycleEventListener, View.OnAttachStateChangeListener, IUnityPlayerLifecycleEvents {
+public class RNUnityManager extends SimpleViewManager<UnityPlayer> implements LifecycleEventListener, View.OnAttachStateChangeListener, IUnityPlayerLifecycleEvents {
     public static final String REACT_CLASS = "UnityView";
+
+    static UnityPlayer player;
 
     public RNUnityManager(ReactApplicationContext reactContext) {
         super();
@@ -30,53 +29,27 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
         return REACT_CLASS;
     }
 
-    static UnityPlayer player;
-    static UnityView singleton;
-
     @Nonnull
     @Override
-    protected UnityView createViewInstance(@Nonnull ThemedReactContext reactContext) {
+    protected UnityPlayer createViewInstance(@Nonnull ThemedReactContext reactContext) {
         Log.d("RNUnityManager", "createViewInstance");
-
-        if (singleton != null) {
-            //player.displayChanged(0, null);
-            player.requestFocus();
-            return singleton;
-        }
 
         if (player == null) {
             Activity activity = reactContext.getCurrentActivity();
             player = new UnityPlayer(activity, this);
             player.resume();
-        } else {
-
         }
 
-        UnityView view = new UnityView(reactContext.getReactApplicationContext());
-        view.addOnAttachStateChangeListener(this);
-
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        view.addView(player, 0, layoutParams);
-
+        player.addOnAttachStateChangeListener(this);
         player.windowFocusChanged(true);
         player.requestFocus();
-
-        singleton = view;
-        return view;
+        return player;
     }
 
     @Override
-    public void onDropViewInstance(UnityView view) {
+    public void onDropViewInstance(UnityPlayer view) {
         Log.d("RNUnityManager", "onDropViewInstance");
-        return;
-
-        //view.removeOnAttachStateChangeListener(this);
-        //view.removeView(player);
-        //view.removeAllViews();
-        //super.onDropViewInstance(view);
-
-        //player.unload();
-        //player = null;
+        view.addOnAttachStateChangeListener(this);
     }
 
     @Override
