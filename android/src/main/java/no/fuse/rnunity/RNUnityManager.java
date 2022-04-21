@@ -49,7 +49,7 @@ public class RNUnityManager extends SimpleViewManager<UnityPlayer> implements Li
     @Override
     public void onDropViewInstance(UnityPlayer view) {
         Log.d("RNUnityManager", "onDropViewInstance");
-        view.addOnAttachStateChangeListener(this);
+        view.removeOnAttachStateChangeListener(this);
     }
 
     @Override
