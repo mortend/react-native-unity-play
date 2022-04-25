@@ -38,6 +38,7 @@ class UnityPlayer2 extends UnityPlayer {
             Method method = View.class.getDeclaredMethod("assignParent", new Class<?>[]{ ViewParent.class });
             method.setAccessible(true);
             method.invoke(this, new Object[]{ null });
+            method.setAccessible(false);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
@@ -76,10 +77,22 @@ public class RNUnityManager extends SimpleViewManager<UnityPlayer2> implements L
             player = new UnityPlayer2(activity, this);
             player.resume();
         } else {
-            player.resetParent();
+
+            if (player.getParent() != null) {
+                Log.d("RNUnityManager", "createViewInstance1");
+                ((ViewGroup) player.getParent()).removeView(player);
+                player.resetParent();
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Log.d("RNUnityManager", "createViewInstance2");
+                player.setZ(1f);
+            }
+
             player.resume();
         }
 
+        Log.d("RNUnityManager", "createViewInstance3");
         player.addOnAttachStateChangeListener(this);
         player.windowFocusChanged(true);
         player.requestFocus();
