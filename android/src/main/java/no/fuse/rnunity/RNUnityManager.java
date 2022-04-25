@@ -1,6 +1,5 @@
 package no.fuse.rnunity;
 
-import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
@@ -8,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.FrameLayout;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -17,17 +15,16 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.unity3d.player.IUnityPlayerLifecycleEvents;
 import com.unity3d.player.UnityPlayer;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.annotation.Nonnull;
 
-class UnityPlayer2 extends FrameLayout {
+class UnityPlayer2 extends UnityPlayer {
 
     public UnityPlayer2(Context context, IUnityPlayerLifecycleEvents iUnityPlayerLifecycleEvents) {
-        //super(context, iUnityPlayerLifecycleEvents);
-        super(context);
+        super(context, iUnityPlayerLifecycleEvents);
+        //super(context);
     }
 
     @Override
@@ -77,13 +74,15 @@ public class RNUnityManager extends SimpleViewManager<UnityPlayer2> implements L
         if (player == null) {
             Activity activity = reactContext.getCurrentActivity();
             player = new UnityPlayer2(activity, this);
-            //player.resume();
+            player.resume();
+        } else {
+            player.resetParent();
+            player.resume();
         }
 
         player.addOnAttachStateChangeListener(this);
-        //player.windowFocusChanged(true);
+        player.windowFocusChanged(true);
         player.requestFocus();
-        player.resetParent();
         return player;
     }
 
@@ -94,46 +93,8 @@ public class RNUnityManager extends SimpleViewManager<UnityPlayer2> implements L
 
         if (view.getParent() != null) {
             Log.d("RNUnityManager", "onDropViewInstance1");
-            ((ViewGroup) view.getParent()).setLayoutTransition(null);
-
-            /*LayoutTransition layoutTransition = ((ViewGroup)view.getParent()).getLayoutTransition();
-            layoutTransition.addTransitionListener(new LayoutTransition.TransitionListener(){
-
-                @Override
-                public void startTransition(LayoutTransition transition, ViewGroup container, View view, int transitionType) {
-                    Log.d("RNUnityManager", "startTransition");
-                }
-
-                @Override
-                public void endTransition(LayoutTransition transition, ViewGroup container, View view, int transitionType) {
-                    Log.d("RNUnityManager", "endTransition");
-                }
-            });*/
-
             ((ViewGroup) view.getParent()).removeView(view);
             view.resetParent();
-
-            for (int i = 0; i < 10 && view.getParent() != null; i++) {
-                Log.d("RNUnityManager", "still has parent!?");
-                Log.d("RNUnityManager", view.getParent().toString());
-
-                int i1 = ((ViewGroup) view.getParent()).indexOfChild(view);
-                int i2 = ((ViewGroup) view.getParent()).indexOfChild(player);
-                Log.d("RNUnityManager", "" + i1);
-                Log.d("RNUnityManager", "" + i2);
-
-                ((ViewGroup) view.getParent()).removeView(view);
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Log.e("RNUnityManager", e.toString());
-                }
-            }
-
-            if (view.getParent() != null) {
-                return;
-            }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -144,12 +105,7 @@ public class RNUnityManager extends SimpleViewManager<UnityPlayer2> implements L
         Log.d("RNUnityManager", "onDropViewInstance3");
         Activity activity = ((Activity) view.getContext());
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(view.getWidth(), view.getHeight());
-
-        try {
-            activity.addContentView(view, layoutParams);
-        } catch (Exception e) {
-            Log.d("RNUnityManager", e.toString());
-        }
+        activity.addContentView(view, layoutParams);
 
         Log.d("RNUnityManager", "onDropViewInstance4");
     }
