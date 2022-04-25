@@ -7,6 +7,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -15,6 +16,10 @@ import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.unity3d.player.IUnityPlayerLifecycleEvents;
 import com.unity3d.player.UnityPlayer;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import javax.annotation.Nonnull;
 
@@ -29,6 +34,22 @@ class UnityPlayer2 extends FrameLayout {
     protected void removeDetachedView(View child, boolean animate) {
         Log.d("UnityPlayer2", "removeDetachedView");
         super.removeDetachedView(child, false);
+    }
+
+    void resetParent() {
+        try {
+            Method method = View.class.getDeclaredMethod("assignParent", new Class<?>[]{ ViewParent.class });
+            method.setAccessible(true);
+            method.invoke(this, new Object[]{ null });
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 }
 
@@ -62,6 +83,7 @@ public class RNUnityManager extends SimpleViewManager<UnityPlayer2> implements L
         player.addOnAttachStateChangeListener(this);
         //player.windowFocusChanged(true);
         player.requestFocus();
+        player.resetParent();
         return player;
     }
 
@@ -89,6 +111,7 @@ public class RNUnityManager extends SimpleViewManager<UnityPlayer2> implements L
             });*/
 
             ((ViewGroup) view.getParent()).removeView(view);
+            view.resetParent();
 
             for (int i = 0; i < 10 && view.getParent() != null; i++) {
                 Log.d("RNUnityManager", "still has parent!?");
