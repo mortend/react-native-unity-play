@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
 
 import javax.annotation.Nonnull;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 class UnityPlayer2 extends UnityPlayer {
 
     public UnityPlayer2(Context context, IUnityPlayerLifecycleEvents iUnityPlayerLifecycleEvents) {
@@ -51,10 +53,10 @@ class UnityPlayer2 extends UnityPlayer {
     }
 }
 
-public class RNUnityManager extends SimpleViewManager<UnityPlayer2> implements LifecycleEventListener, View.OnAttachStateChangeListener, IUnityPlayerLifecycleEvents {
+public class RNUnityManager extends SimpleViewManager<UnityView> implements LifecycleEventListener, View.OnAttachStateChangeListener, IUnityPlayerLifecycleEvents {
     public static final String REACT_CLASS = "UnityView";
 
-    static UnityPlayer2 player;
+    public static UnityPlayer2 player;
 
     public RNUnityManager(ReactApplicationContext reactContext) {
         super();
@@ -69,56 +71,60 @@ public class RNUnityManager extends SimpleViewManager<UnityPlayer2> implements L
 
     @Nonnull
     @Override
-    protected UnityPlayer2 createViewInstance(@Nonnull ThemedReactContext reactContext) {
+    protected UnityView createViewInstance(@Nonnull ThemedReactContext reactContext) {
         Log.d("RNUnityManager", "createViewInstance");
 
         if (player == null) {
             Activity activity = reactContext.getCurrentActivity();
             player = new UnityPlayer2(activity, this);
-            player.resume();
-        } else {
+        }
 
-            if (player.getParent() != null) {
-                Log.d("RNUnityManager", "createViewInstance1");
-                ((ViewGroup) player.getParent()).removeView(player);
-                player.resetParent();
-            }
+        if (player.getParent() != null) {
+            Log.d("RNUnityManager", "createViewInstance1");
+            ((ViewGroup) player.getParent()).removeView(player);
+            player.resetParent();
+        }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Log.d("RNUnityManager", "createViewInstance2");
-                player.setZ(1f);
-            }
-
-            player.resume();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Log.d("RNUnityManager", "createViewInstance2");
+            player.setZ(1f);
         }
 
         Log.d("RNUnityManager", "createViewInstance3");
-        player.addOnAttachStateChangeListener(this);
+
+        UnityView view = new UnityView(reactContext.getReactApplicationContext(), player);
+        view.addOnAttachStateChangeListener(this);
+
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        view.addView(player, 0, layoutParams);
+
         player.windowFocusChanged(true);
         player.requestFocus();
-        return player;
+        player.resume();
+
+        return view;
     }
 
     @Override
-    public void onDropViewInstance(UnityPlayer2 view) {
+    public void onDropViewInstance(UnityView view) {
         Log.d("RNUnityManager", "onDropViewInstance");
         view.removeOnAttachStateChangeListener(this);
 
-        if (view.getParent() != null) {
+        if (player.getParent() != null) {
             Log.d("RNUnityManager", "onDropViewInstance1");
             ((ViewGroup) view.getParent()).removeView(view);
-            view.resetParent();
+            player.resetParent();
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Log.d("RNUnityManager", "onDropViewInstance2");
-            view.setZ(-1f);
+            player.setZ(-1f);
         }
 
         Log.d("RNUnityManager", "onDropViewInstance3");
-        Activity activity = ((Activity) view.getContext());
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(view.getWidth(), view.getHeight());
-        activity.addContentView(view, layoutParams);
+        Activity activity = ((ReactApplicationContext) view.getContext()).getCurrentActivity();
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(1, 1);
+        activity.addContentView(player, layoutParams);
 
         Log.d("RNUnityManager", "onDropViewInstance4");
     }
@@ -140,12 +146,12 @@ public class RNUnityManager extends SimpleViewManager<UnityPlayer2> implements L
 
     @Override
     public void onViewAttachedToWindow(View view) {
-        Log.d("RNUnityManager", "onViewAttachedToWindow");
+        Log.d("RNUnityManager", "onViewAttachedToWindow: " + view);
     }
 
     @Override
     public void onViewDetachedFromWindow(View view) {
-        Log.d("RNUnityManager", "onViewDetachedFromWindow");
+        Log.d("RNUnityManager", "onViewDetachedFromWindow: " + view);
         Log.d("RNUnityManager", view.getParent().toString());
     }
 
