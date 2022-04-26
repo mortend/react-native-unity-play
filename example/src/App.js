@@ -10,21 +10,25 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Unity" component={Unity} />
         <Stack.Screen name="Main" component={Main} />
+        <Stack.Screen name="Unity" component={Unity} />
       </Stack.Navigator>
     </NavigationContainer>
   )
 }
 
-const Main = () => {
+const Main = ({ navigation }) => {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Button
+        title="Go to Unity"
+        onPress={() => navigation.navigate("Unity")}
+      />
     </View>
   )
 }
 
-const Unity = ({ navigation }) => {
+const Unity = () => {
   return (
     <UnityView style={{ flex: 1, justifyContent: "flex-end" }} onMessage={onMessage}>
       <View style={{ flexDirection: "row", alignContent: "space-between", justifyContent: "center" }}>
@@ -32,10 +36,6 @@ const Unity = ({ navigation }) => {
         <Button title={"toggleRotate"} onPress={async () => console.log(await cubeApi.toggleRotate())} />
         <Button title={"getAccount"} onPress={async () => console.log(await cubeApi.getAccount())} />
         <Button title={"fail"} onPress={async () => console.log(await cubeApi.fail())} />
-        <Button
-          title="home"
-          onPress={() => navigation.navigate("Main")}
-        />
       </View>
     </UnityView>
   )
