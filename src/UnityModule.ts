@@ -10,16 +10,16 @@ export interface UnityModule {
     addListener(onMessage: (data: any) => void): EventSubscription
     /**
      * Invoke a Unity method returning a promise.
-     * @param gameObject The Name of GameObject. Also can be a path string.
-     * @param methodName Method name in GameObject instance.
+     * @param gameObject The name or path of GameObject.
+     * @param methodName The method to invoke.
      * @param input An object to serialize as JSON.
      */
     callMethod(gameObject: string, methodName: string, input?: any): Promise<any>
     /**
-     * Send Message to Unity.
-     * @param gameObject The Name of GameObject. Also can be a path string.
-     * @param methodName Method name in GameObject instance.
-     * @param message The message that is being sent.
+     * Send a message to Unity.
+     * @param gameObject The name or path of GameObject.
+     * @param methodName The method to invoke.
+     * @param message The argument to pass.
      */
     sendMessage(gameObject: string, methodName: string, message: string): void
 }
