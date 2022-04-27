@@ -35,7 +35,6 @@ public class RNUnityModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void sendMessage(String gameObject, String methodName, String message) {
-        RNUnityManager.player.resume();
         UnityPlayer.UnitySendMessage(gameObject, methodName, message);
     }
 

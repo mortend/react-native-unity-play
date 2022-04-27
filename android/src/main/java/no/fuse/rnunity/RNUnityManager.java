@@ -3,6 +3,8 @@ package no.fuse.rnunity;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +79,26 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
         if (player == null) {
             Activity activity = reactContext.getCurrentActivity();
             player = new UnityPlayer2(activity, this);
+        } else {
+            // We must pause the player to avoid hanging on last frame
+            player.pause();
+
+            // Repeat pause/resume after delay to workaround another glitch
+            final Activity activity = reactContext.getCurrentActivity();
+            final Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("RNUnityManager", "pause/resume player!");
+                            player.pause();
+                            player.resume();
+                        }
+                    });
+                }
+            }, 199);
         }
 
         if (player.getParent() != null) {
@@ -112,7 +134,7 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
 
         if (player.getParent() != null) {
             Log.d("RNUnityManager", "onDropViewInstance1");
-            ((ViewGroup) view.getParent()).removeView(view);
+            ((ViewGroup) player.getParent()).removeView(view);
             player.resetParent();
         }
 
@@ -132,11 +154,17 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
     @Override
     public void onHostResume() {
         Log.d("RNUnityManager", "onHostResume");
+
+        if (player != null)
+            player.resume();
     }
 
     @Override
     public void onHostPause() {
         Log.d("RNUnityManager", "onHostPause");
+
+        if (player != null)
+            player.pause();
     }
 
     @Override
@@ -152,7 +180,6 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
     @Override
     public void onViewDetachedFromWindow(View view) {
         Log.d("RNUnityManager", "onViewDetachedFromWindow: " + view);
-        Log.d("RNUnityManager", view.getParent().toString());
     }
 
     @Override
