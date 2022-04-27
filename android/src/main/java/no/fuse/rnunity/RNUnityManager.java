@@ -1,8 +1,6 @@
 package no.fuse.rnunity;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -22,9 +20,7 @@ import java.lang.reflect.Method;
 
 import javax.annotation.Nonnull;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-
-public class RNUnityManager extends SimpleViewManager<UnityView> implements LifecycleEventListener, View.OnAttachStateChangeListener, IUnityPlayerLifecycleEvents {
+public class RNUnityManager extends SimpleViewManager<UnityPlayer> implements LifecycleEventListener, View.OnAttachStateChangeListener, IUnityPlayerLifecycleEvents {
     public static final String REACT_CLASS = "UnityView";
 
     public static UnityPlayer player;
@@ -42,17 +38,19 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
 
     @Nonnull
     @Override
-    protected UnityView createViewInstance(@Nonnull ThemedReactContext reactContext) {
+    protected UnityPlayer createViewInstance(@Nonnull ThemedReactContext reactContext) {
         Log.d("RNUnityManager", "createViewInstance");
+
         final Activity activity = reactContext.getCurrentActivity();
 
         if (player == null) {
             player = new UnityPlayer(activity, this);
         } else {
-            // We must pause the player to avoid hanging on last frame
-            player.pause();
+            // Force-remove parent view to avoid exceptions thrown
+            resetPlayerParent();
 
-            // Repeat pause/resume after delay to workaround another glitch
+            // Restart Unity after delay to workaround a glitch
+            // where Unity sometimes seem to stop rendering
             final Handler handler = new Handler(Looper.getMainLooper());
             handler.postDelayed(new Runnable() {
                 @Override
@@ -69,37 +67,20 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
             }, 199);
         }
 
-        if (player.getParent() != null) {
-            ((ViewGroup) player.getParent()).removeView(player);
-            resetParent();
-        }
-
-        UnityView view = new UnityView(reactContext.getReactApplicationContext(), player);
-        view.addOnAttachStateChangeListener(this);
-
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        view.addView(player, 0, layoutParams);
-
+        player.addOnAttachStateChangeListener(this);
         player.windowFocusChanged(true);
         player.requestFocus();
         player.resume();
 
-        return view;
+        return player;
     }
 
     @Override
-    public void onDropViewInstance(UnityView view) {
-        Log.d("RNUnityManager", "onDropViewInstance");
+    public void onDropViewInstance(UnityPlayer view) {
+        Log.d("RNUnityManager", "onDropViewInstance: " + view);
+
         view.removeOnAttachStateChangeListener(this);
-
-        if (player.getParent() != null) {
-            ((ViewGroup) player.getParent()).removeView(view);
-            resetParent();
-        }
-
-        Activity activity = ((ReactApplicationContext) view.getContext()).getCurrentActivity();
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(1, 1);
-        activity.addContentView(player, layoutParams);
+        player.pause();
     }
 
     @Override
@@ -143,7 +124,17 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
         Log.d("RNUnityManager", "onUnityPlayerQuitted");
     }
 
-    static void resetParent() {
+    static void resetPlayerParent() {
+        if (player.getParent() == null)
+            return;
+
+        ((ViewGroup) player.getParent()).removeView(player);
+
+        if (player.getParent() == null)
+            return;
+
+        Log.d("RNUnityManager", "Using reflection to reset parent!");
+
         try {
             Method method = View.class.getDeclaredMethod("assignParent", new Class<?>[]{ ViewParent.class });
             method.setAccessible(true);
@@ -158,5 +149,10 @@ public class RNUnityManager extends SimpleViewManager<UnityView> implements Life
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
+
+        if (player.getParent() == null)
+            return;
+
+        Log.e("RNUnityManager", "Unable to reset parent of player " + player);
     }
 }
