@@ -1,17 +1,14 @@
 
-# OSX
-#
+# Mac
 .DS_Store
 
-# node.js
-#
+# Node.js
 node_modules/
 npm-debug.log
 yarn-error.log
-  
+*.tgz
 
 # Xcode
-#
 build/
 *.pbxuser
 !default.pbxuser
@@ -29,10 +26,8 @@ DerivedData
 *.ipa
 *.xcuserstate
 project.xcworkspace
-      
 
-# Android/IntelliJ
-#
+# Android Studio
 build/
 .idea
 .gradle
