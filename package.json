@@ -1,22 +1,25 @@
 {
-  "name": "react-native-unity-play",
-  "version": "0.1.6",
-  "description": "React Native package to use Unity as library with React Native app",
+  "name": "react-native-unity2",
+  "version": "1.0.0-beta",
+  "description": "Embed Unity content in your React Native app!",
   "main": "index.ts",
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
+    "typescript",
     "react-native",
-    "unity"
+    "unity",
+    "android",
+    "ios"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/azesmway/react-native-unity-play.git"
+    "url": "git+https://github.com/fusetools/react-native-unity2.git"
   },
-  "homepage": "https://github.com/azesmway/react-native-unity-play#README",
-  "author": "Alexey Zolotaryov <azesm@me.com> (https://github.com/azesmway)",
+  "homepage": "https://github.com/fusetools/react-native-unity2#README",
+  "author": "Fusetools AS (https://github.com/fusetools)",
   "license": "MIT",
   "peerDependencies": {
     "react-native": "^0.64.1"
@@ -26,6 +29,6 @@
     "typescript": "^4.4.2"
   },
   "bugs": {
-    "url": "https://github.com/azesmway/react-native-unity-play/issues"
+    "url": "https://github.com/fusetools/react-native-unity2/issues"
   }
 }
